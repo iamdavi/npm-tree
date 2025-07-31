@@ -61,16 +61,18 @@ class TreeCategoryItem {
     parent;
     type;
     index;
+    categories;
     totalLength;
     childs;
 
     #itemDOM
 
-    constructor(parent, type, index, totalLength) {
+    constructor(parent, type, index, categories) {
         this.parent = parent
         this.type = type
         this.index = index
-        this.totalLength = totalLength
+        this.categories = categories
+        this.totalLength = categories.length
         this.childs = []
 
         this.rowWrapperDOM = this.createRow()
@@ -78,13 +80,27 @@ class TreeCategoryItem {
 
     createRow() {
         this.itemDOM = this.createItemDom()
+        this.childDOM = this.createChildDom()
 
         const div = document.createElement('div')
+        div.style.gap = '12px'
         div.style.display = 'grid'
-        div.style.grid = `repeat(${this.totalLength}, auto) / auto`
+        div.style.gridTemplateRows = '1fr'
+        div.style.gridTemplateColumns = `repeat(${this.totalLength - this.index}, 1fr)`
+
         div.appendChild(this.itemDOM)
+        div.appendChild(this.childDOM)
+
+        this.treeWrapper = this.childDOM
 
         this.parent.treeWrapper.appendChild(div)
+    }
+
+    createChildDom() {
+        const div = document.createElement('div')
+        div.style.gridColumnStart = 2
+        div.style.gridColumnEnd = this.totalLength + - (this.index - 1)
+        return div
     }
 
     createItemDom() {
@@ -96,21 +112,58 @@ class TreeCategoryItem {
                     </div>
                 </div>
                 <div class="input-group-content">
-                    <input type='text' value='' />
+                    <input type='text' value='${this.index}' />
                 </div>
                 <div class="post-input-group">
                     <div>
-                        <button class="butn butn-sm butn-outline-danger">x</button>
+                        <button class="butn butn-sm butn-outline-danger">
+                            x
+                        </button>
                     </div>
                     <div>
-                        <button class="butn butn-sm butn-outline-success">+</button>
+                        <button class="butn butn-sm butn-outline-success category-add-child">
+                            +
+                        </button>
                     </div>
                 </div>
             </div>
         `;
         const tmp = document.createElement('div')
         tmp.innerHTML = template
-        return tmp.children[0]
+
+        const item = tmp.children[0]
+        item.style.gridColumnStart = 1
+        item.style.gridColumnEnd = 1
+
+        const addButton = item.querySelector('.category-add-child')
+        addButton.addEventListener('click', (e) => {
+            const nextCategory = this.getNextLevel(this.type)
+            const child = new TreeCategoryItem(
+                this,
+                nextCategory,
+                this.index + 1,
+                this.categories
+            );
+
+            this.childs.push(child)
+            document.dispatchEvent(new CustomEvent("newchildcategory", {
+                detail: {
+                    parent: this,
+                    child: child
+                },
+            }));
+        })
+
+        return item
+    }
+
+    /**
+     * @param {string} search
+     */
+    getNextLevel(search) {
+        return this.categories[
+            this.categories.findIndex((tl) => tl.key == search) + 1
+        ]
     }
 
     set itemDOM(val) {
@@ -143,7 +196,6 @@ class TreeCategory {
         this.treeLevels = treeLevels
         // this.treeChilds is defined at this point
         this.treeHeader = new TreeCategoryHeader(this.treeLevels)
-
     }
 
     createTreeItem(type) {
@@ -152,7 +204,7 @@ class TreeCategory {
             this,
             type,
             typeIndex,
-            this.treeChilds.length
+            this.treeLevels
         )
         this.treeChilds[typeIndex].childs.push(item)
     }
@@ -226,4 +278,8 @@ class TreeCategory {
 
 document.addEventListener('DOMContentLoaded', () => {
     const tree = new TreeCategory();
+})
+
+document.addEventListener('newchildcategory', (e) => {
+    console.log(e.detail)
 })

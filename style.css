@@ -71,11 +71,15 @@ button.butn.butn-primary {
 .input-group {
     display: flex;
     align-items: last baseline;
+    align-self: start;
 }
 
-.post-input-group div,
-.pre-input-group div {
-    padding:  0px 4px;
+.input-group-content {
+    width: -webkit-fill-available;
+}
+
+.input-group-content input {
+    width: 98%;
 }
 
 .post-input-group {
