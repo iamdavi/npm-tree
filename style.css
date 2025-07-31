@@ -1,0 +1,83 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+    --primary-color: rgb(37, 98, 197);
+    --danger-color: rgb(206, 46, 46);
+    --success-color: rgb(37, 197, 66);
+}
+
+.wrapper {
+    max-width: 1443px;
+    margin: auto;
+    min-height: 100px;
+    border: 1px solid lightgray;
+}
+
+button.butn {
+    border: none;
+    background-color: transparent;
+    padding: 0px 8px;
+    border-radius: 2px;
+    margin: 1px;
+}
+
+button.butn-sm {
+    padding: 0px 4px;
+}
+
+button.butn:hover {
+    cursor: pointer;
+}
+
+button.butn.butn-outline-danger {
+    background-color: white;
+    color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+    margin: 0px;
+}
+
+button.butn.butn-outline-success {
+    background-color: white;
+    color: var(--success-color);
+    border: 1px solid var(--success-color);
+    margin: 0px;
+}
+
+button.butn.butn-outline-primary {
+    background-color: white;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    margin: 0px;
+}
+
+button.butn.butn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.categoriesHeader {
+    display: flex;
+    gap: 12px;
+}
+
+.header-col {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.input-group {
+    display: flex;
+    align-items: last baseline;
+}
+
+.post-input-group div,
+.pre-input-group div {
+    padding:  0px 4px;
+}
+
+.post-input-group {
+    display: flex;
+}
